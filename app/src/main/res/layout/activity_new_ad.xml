@@ -46,23 +46,36 @@
             android:layout_height="wrap_content"
             android:text="add feature"
             android:drawableRight="@drawable/baseline_add_circle_24"/>
-       <HorizontalScrollView
+       <ScrollView
            android:layout_margin="20dp"
-           android:layout_width="match_parent"
+           android:layout_width="wrap_content"
            android:layout_height="wrap_content">
            <LinearLayout
                android:id="@+id/imageLayout"
-               android:layout_width="match_parent"
+               android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:orientation="horizontal"/>
-       </HorizontalScrollView>
+       </ScrollView>
         <Button
             android:layout_margin="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="add image"
             android:id="@+id/addImage"/>
+        <LinearLayout
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/addonLayout"/>
+        <Button
+            android:layout_margin="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="add addon"
+            android:id="@+id/addAddon"/>
     </LinearLayout>
+
 </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
