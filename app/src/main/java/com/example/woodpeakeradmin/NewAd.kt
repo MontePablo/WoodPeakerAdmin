@@ -8,7 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.ImageView
+import android.widget.LinearLayout
 import com.example.woodpeakeradmin.databinding.*
 
 class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -17,21 +17,74 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     var imageArray=ArrayList<CustomviewImageBinding>()
     var productShape=""
     var addonArray=ArrayList<CustomviewAddonBinding>()
+    lateinit var currentImageLayout:LinearLayout
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityNewAdBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        currentImageLayout=binding.imageLayoutRed
         binding.addFeature.setOnClickListener(View.OnClickListener { addFeature() })
-        binding.addImage.setOnClickListener(View.OnClickListener { addImage() })
+        binding.addImage.setOnClickListener(View.OnClickListener { addImage(currentImageLayout) })
         binding.addAddon.setOnClickListener(View.OnClickListener { addAddon() })
-        val list= listOf<String>("Island shape kitchen","I shape kitchen","U shape kitchen","L shape kitchen")
+        val list= listOf<String>("Island shape kitchen","I shape kitchen","U shape kitchen","L shape kitchen","others")
         val shapeAdapter:ArrayAdapter<*>
         shapeAdapter= ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list)
         binding.kitchenShapeSpinner.adapter=shapeAdapter
         binding.kitchenShapeSpinner.onItemSelectedListener=this
 
+        binding.colBlack.setOnClickListener(View.OnClickListener { colorBtnPress("Black")})
+        binding.colBlue.setOnClickListener(View.OnClickListener { colorBtnPress("Blue")})
+        binding.colRed.setOnClickListener(View.OnClickListener { colorBtnPress("Red")})
+        binding.colWhite.setOnClickListener(View.OnClickListener { colorBtnPress("White")})
+        binding.colGreen.setOnClickListener(View.OnClickListener { colorBtnPress("Green")})
+        binding.colYellow.setOnClickListener(View.OnClickListener { colorBtnPress("Yellow")})
+
+
+    }
+    fun uploadData(){
+        val title=binding.productName.text.toString()
+        val price=binding.productPrice.text.toString()
+    }
+    fun colorBtnPress(col:String){
+        when(col){
+            "Red" ->{
+                currentImageLayout=binding.imageLayoutRed
+                hideAllLayoutsExcept(currentImageLayout)
+            }
+            "Green" ->{
+                currentImageLayout=binding.imageLayoutGreen
+                hideAllLayoutsExcept(currentImageLayout)
+            }
+            "Blue" ->{
+               currentImageLayout=binding.imageLayoutBlue
+                hideAllLayoutsExcept(currentImageLayout)
+            }
+            "White" ->{
+                currentImageLayout=binding.imageLayoutWhite
+                hideAllLayoutsExcept(currentImageLayout)
+
+            }
+            "Black" ->{
+                currentImageLayout=binding.imageLayoutBlack
+                hideAllLayoutsExcept(currentImageLayout)
+            }
+            "Yellow" ->{
+                currentImageLayout=binding.imageLayoutYellow
+                hideAllLayoutsExcept(currentImageLayout)
+            }
+
+        }
+
+    }
+    fun hideAllLayoutsExcept(exception:LinearLayout){
+        binding.imageLayoutRed.visibility=View.GONE
+        binding.imageLayoutGreen.visibility=View.GONE
+        binding.imageLayoutBlue.visibility=View.GONE
+        binding.imageLayoutWhite.visibility=View.GONE
+        binding.imageLayoutYellow.visibility=View.GONE
+        binding.imageLayoutBlack.visibility=View.GONE
+        exception.visibility=View.VISIBLE
 
     }
 
@@ -56,17 +109,19 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         })
         binding.featuresLayout.addView(featuresBinding.root)
     }
-    private fun addImage() {
+    private fun addImage(imageLayout: LinearLayout) {
         val imageBinding=CustomviewImageBinding.inflate(layoutInflater)
         imageBinding.delete.setOnClickListener(View.OnClickListener {
             imageArray.remove(imageBinding)
-            binding.imageLayout.removeView(imageBinding.root)
+            imageLayout.removeView(imageBinding.root)
         })
+
         imageBinding.insert.setOnClickListener(View.OnClickListener {
             photoPick(1)
             imageArray.add(imageBinding)
         })
-        binding.imageLayout.addView(imageBinding.root)
+        imageLayout.addView(imageBinding.root)
+        imageBinding.storeColorId.setText(imageLayout.id.toString())
     }
     fun photoPick(requestCode: Int) {
         val intent = Intent()
