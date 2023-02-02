@@ -166,6 +166,15 @@
                 app:layout_constraintTop_toBottomOf="@id/productName" />
 
         </LinearLayout>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/retryToast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textColor="#BC0202"
+            android:text="uplaod failed, kindly press the retry button of the image!"/>
+
         <Button
             android:layout_margin="20dp"
             android:layout_width="wrap_content"
@@ -187,5 +196,15 @@
     </LinearLayout>
 
 </ScrollView>
+    <Button
+        android:background="#00BCD4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent=".07"
+        android:text="publish"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/publish"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
