@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DFDFDF"
+    android:background="#DDDDDD"
     tools:context=".NewAd">
 <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
+    app:layout_constraintHeight_percent="0.93"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintTop_toTopOf="parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <EditText
             android:layout_margin="20dp"
             android:layout_width="match_parent"
@@ -47,54 +49,55 @@
             android:layout_height="wrap_content"
             android:text="add feature"
             android:drawableRight="@drawable/baseline_add_circle_24"/>
-        <EditText
-            android:id="@+id/productDescription"
+
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="description"/>
-           <LinearLayout
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content">
-               <LinearLayout
-                   android:visibility="gone"
-                   android:id="@+id/imageLayoutBlack"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="horizontal"/>
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/imageLayoutBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
 
-               <LinearLayout
-                   android:visibility="gone"
-                   android:id="@+id/imageLayoutWhite"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="horizontal"/>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/imageLayoutWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
 
-               <LinearLayout
-                   android:visibility="gone"
-                   android:id="@+id/imageLayoutYellow"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="horizontal"/>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/imageLayoutYellow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
 
-               <LinearLayout
-                   android:id="@+id/imageLayoutRed"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="horizontal" />
+                <LinearLayout
+                    android:id="@+id/imageLayoutRed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
 
-               <LinearLayout
-                   android:visibility="gone"
-                   android:id="@+id/imageLayoutBlue"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="horizontal"/>
-               <LinearLayout
-                   android:visibility="gone"
-                   android:id="@+id/imageLayoutGreen"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:orientation="horizontal"/>
-           </LinearLayout>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/imageLayoutBlue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/imageLayoutGreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
+            </LinearLayout>
+
+        </HorizontalScrollView>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -174,7 +177,6 @@
             android:textSize="10sp"
             android:textColor="#BC0202"
             android:text="uplaod failed, kindly press the retry button of the image!"/>
-
         <Button
             android:layout_margin="20dp"
             android:layout_width="wrap_content"
@@ -193,14 +195,20 @@
             android:layout_height="wrap_content"
             android:text="add addon"
             android:id="@+id/addAddon"/>
+        <EditText
+            android:id="@+id/productDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="description"/>
     </LinearLayout>
+
 
 </ScrollView>
     <Button
         android:background="#00BCD4"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent=".07"
+        app:layout_constraintHeight_percent=".065"
         android:text="publish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

@@ -29,18 +29,34 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/baseline_cancel_24"/>
 
-    <LinearLayout
+    <HorizontalScrollView
+        android:id="@+id/horizontalView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/addonPrice"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageLayoutInAddon"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageLayoutInAddon"
-        android:orientation="horizontal" />
+        android:visibility="gone"
+        android:id="@+id/storeLink"/>
+ <TextView
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:visibility="gone"
+     android:id="@+id/storeName"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="add image"
         android:id="@+id/addImage"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageLayoutInAddon"/>
+        app:layout_constraintTop_toBottomOf="@id/horizontalView"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

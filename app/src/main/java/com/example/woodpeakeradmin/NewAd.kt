@@ -1,18 +1,29 @@
 package com.example.woodpeakeradmin
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.location.LocationManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import com.example.woodpeakeradmin.Daos.ProductDao
 import com.example.woodpeakeradmin.Daos.StorageDao
 import com.example.woodpeakeradmin.databinding.*
 import com.example.woodpeakeradmin.models.Product
@@ -20,7 +31,6 @@ import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
@@ -29,20 +39,29 @@ import kotlin.collections.HashMap
 import kotlin.concurrent.timerTask
 
 class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+    private var isReadPermissionGranted = false
+
     lateinit var binding:ActivityNewAdBinding
     var featureArray=ArrayList<CustomviewFeaturesBinding>()
     var imageViewTable:Hashtable<Int,CustomviewImageBinding> = Hashtable<Int,CustomviewImageBinding>()
     var productShape=""
-    var addonArray=ArrayList<CustomviewAddonBinding>()
+    var addonTable=Hashtable<String,CustomviewAddonBinding>()
     lateinit var currentImageLayout:LinearLayout
 
      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityNewAdBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        currentImageLayout=binding.imageLayoutRed
+
+         permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
+             isReadPermissionGranted = permissions[android.Manifest.permission.READ_EXTERNAL_STORAGE] ?: isReadPermissionGranted
+         }
+//         requestPermission()
+
+         currentImageLayout=binding.imageLayoutRed
         binding.addFeature.setOnClickListener(View.OnClickListener { addFeature() })
-        binding.addImage.setOnClickListener(View.OnClickListener { addImage(currentImageLayout) })
+        binding.addImage.setOnClickListener(View.OnClickListener { addImage(currentImageLayout,"999") })
         binding.addAddon.setOnClickListener(View.OnClickListener { addAddon() })
         val list= listOf<String>("Island shape kitchen","I shape kitchen","U shape kitchen","L shape kitchen","others")
         val shapeAdapter:ArrayAdapter<*>
@@ -59,6 +78,22 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
 
     }
+
+    fun deleteImagesFromCloud(link:String){
+        if(link.isNotBlank()){
+            StorageDao.deleteProductImage(link).addOnFailureListener {
+                Log.d("TAG", "Delete failed:${it.localizedMessage}")
+            }
+        }else {
+            for (f in imageViewTable) {
+                StorageDao.deleteProductImage(f.value.storeName.text.toString())
+                    .addOnFailureListener {
+                        Log.d("TAG", "Delete failed:${it.localizedMessage}")
+                    }
+            }
+        }
+    }
+
     fun uploadData(){
         val product=Product()
         product.title=binding.productName.text.toString()
@@ -75,20 +110,25 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         var greenPics=ArrayList<String>()
         var whitePics=ArrayList<String>()
         for(f in imageViewTable) {
-            if (f.storeColorId.text.toString() == binding.colBlue.id.toString()) {
-                bluePics.add(f.storeLink.text.toString())
-            } else if (f.storeColorId.text.toString() == binding.colRed.id.toString()) {
-                redPics.add(f.storeLink.text.toString())
-            } else if (f.storeColorId.text.toString() == binding.colYellow.id.toString()) {
-                yellowPics.add(f.storeLink.text.toString())
-            } else if (f.storeColorId.text.toString() == binding.colBlack.id.toString()) {
-                blackPics.add(f.storeLink.text.toString())
-            } else if (f.storeColorId.text.toString() == binding.colWhite.id.toString()) {
-                whitePics.add(f.storeLink.text.toString())
-            } else if (f.storeColorId.text.toString() == binding.colGreen.id.toString()) {
-                greenPics.add(f.storeLink.text.toString())
+            if(f.value.storeAddon.text.toString()=="999") {
+                if (f.value.storeColorId.text.toString() == binding.colBlue.id.toString()) {
+                    bluePics.add(f.value.storeLink.text.toString())
+                } else if (f.value.storeColorId.text.toString() == binding.colRed.id.toString()) {
+                    redPics.add(f.value.storeLink.text.toString())
+                } else if (f.value.storeColorId.text.toString() == binding.colYellow.id.toString()) {
+                    yellowPics.add(f.value.storeLink.text.toString())
+                } else if (f.value.storeColorId.text.toString() == binding.colBlack.id.toString()) {
+                    blackPics.add(f.value.storeLink.text.toString())
+                } else if (f.value.storeColorId.text.toString() == binding.colWhite.id.toString()) {
+                    whitePics.add(f.value.storeLink.text.toString())
+                } else if (f.value.storeColorId.text.toString() == binding.colGreen.id.toString()) {
+                    greenPics.add(f.value.storeLink.text.toString())
+                }
             }else{
-
+                val g=addonTable[f.value.storeAddon.text.toString()]
+                g?.storeLink?.text=f.value.storeLink.text.toString()
+                g?.storeName?.text=f.value.storeName.text.toString()
+                addonTable.replace(f.value.storeAddon.text.toString(),g)
             }
         }
         if(bluePics.isNotEmpty()) product.images.put("Blue",bluePics as Objects)
@@ -97,14 +137,18 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         if(blackPics.isNotEmpty()) product.images.put("Black",blackPics as Objects)
         if(redPics.isNotEmpty()) product.images.put("Red",redPics as Objects)
         if(yellowPics.isNotEmpty()) product.images.put("Yellow",yellowPics as Objects)
-        for(f in addonArray){
+        for(f in addonTable){
             val hm=HashMap<String,Objects>()
-            hm.put("Name",f.addonName.text.toString() as Objects)
-            hm.put("Price",f.addonPrice.text.toString() as Objects)
-            hm.put("Image",f.storeLink.text.toString() as Objects)
+            hm.put("Name",f.value.addonName.text.toString() as Objects)
+            hm.put("Price",f.value.addonPrice.text.toString() as Objects)
+            hm.put("ImageLink",f.value.storeLink.text.toString() as Objects)
             product.addons.add(hm)
         }
-
+        ProductDao.addProduct(product).addOnSuccessListener { Log.d("TAG","productUpload success"); Toast.makeText(this,"sucess", Toast.LENGTH_SHORT).show()
+//                        startActivity(Intent(this,MainActivity::class.java))
+//                        finish()
+        }.addOnFailureListener { Log.d("TAG","productUpload failed:${it.localizedMessage}");Toast.makeText(this,"failed! retry later",
+                Toast.LENGTH_SHORT).show()}
     }
     fun colorBtnPress(col:String){
         when(col){
@@ -151,12 +195,12 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     fun addAddon(){
         val addonBinding = CustomviewAddonBinding.inflate(layoutInflater)
         binding.addonLayout.addView(addonBinding.root)
-        addonArray.add(addonBinding)
+        addonTable.put(addonBinding.hashCode().toString(),addonBinding)
         addonBinding.addImage.setOnClickListener(View.OnClickListener {
-            addImage(addonBinding.imageLayoutInAddon,"")
+            addImage(addonBinding.imageLayoutInAddon,addonBinding.hashCode().toString())
         })
         addonBinding.cancel.setOnClickListener(View.OnClickListener {
-            addonArray.remove(addonBinding)
+            addonTable.remove(addonBinding.hashCode().toString())
             binding.addonLayout.removeView(addonBinding.root)
         })
     }
@@ -187,11 +231,13 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
         timer.schedule(timertask,0,15)
     }
-    private fun addImage(imageLayout: LinearLayout,flag:String) {
+    private fun addImage(imageLayout: LinearLayout, addonHash: String) {
         val imageBinding=CustomviewImageBinding.inflate(layoutInflater)
+//        storagePermission()
         imageBinding.delete.setOnClickListener(View.OnClickListener {
             imageViewTable.remove(imageBinding.hashCode())
             imageLayout.removeView(imageBinding.root)
+            deleteImagesFromCloud(imageBinding.storeName.text.toString())
         })
         imageBinding.retry.setOnClickListener(View.OnClickListener {
             val imageUri = Uri.parse(imageBinding.storeUri.text.toString())
@@ -201,14 +247,12 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             imageBinding.imageview.setImageURI(imageUri) })
 
         imageBinding.insert.setOnClickListener(View.OnClickListener {
-            if(flag=="fature"){hhhhh7467
-
-            }
+            imageBinding.storeAddon.text=addonHash.toString()
             photoPick(imageBinding.hashCode())
             imageViewTable.put(imageBinding.hashCode(),imageBinding)
         })
         imageLayout.addView(imageBinding.root)
-            imageBinding.storeColorId.setText(imageLayout.id.toString())
+        imageBinding.storeColorId.setText(imageLayout.id.toString())
     }
     fun photoPick(requestCode: Int) {
         val intent = Intent()
@@ -272,4 +316,32 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    private fun requestPermission(){
+//        isReadPermissionGranted = ContextCompat.checkSelfPermission(
+//            this,
+//            android.Manifest.permission.READ_EXTERNAL_STORAGE
+//        ) == PackageManager.PERMISSION_GRANTED
+//        val permissionRequest : MutableList<String> = ArrayList()
+//        if (!isReadPermissionGranted){
+//            permissionRequest.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+//            Log.d("TAGG","$isReadPermissionGranted")
+//        }
+//        if (permissionRequest.isNotEmpty()){
+//            permissionLauncher.launch(permissionRequest.toTypedArray())
+//            Log.d("TAGG","${permissionRequest.isNotEmpty()}")
+//        }
+//    }
 }
