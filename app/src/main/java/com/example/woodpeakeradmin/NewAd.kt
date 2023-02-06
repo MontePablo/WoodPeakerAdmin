@@ -37,6 +37,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.concurrent.timerTask
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+
 
 class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
@@ -57,8 +62,6 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
          permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
              isReadPermissionGranted = permissions[android.Manifest.permission.READ_EXTERNAL_STORAGE] ?: isReadPermissionGranted
          }
-//         requestPermission()
-
          currentImageLayout=binding.imageLayoutRed
         binding.addFeature.setOnClickListener(View.OnClickListener { addFeature() })
         binding.addImage.setOnClickListener(View.OnClickListener { addImage(currentImageLayout,"999") })
@@ -221,7 +224,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 super.runOnUiThread(Runnable {
                     viewBinding.progressBar.visibility=View.VISIBLE
                     counter++;
-                    viewBinding.progressBar.setProgress(counter)
+                    viewBinding.progressBar.progress = counter
                     if(counter==100){
                         timer.cancel()
                         viewBinding.progressBar.visibility=View.INVISIBLE
@@ -270,7 +273,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             var imageUri=data!!.data
             Log.d("TAG","onActivityResult Image received")
             val imageBinding= imageViewTable[requestCode]
-            imageBinding?.imageview?.setImageURI(imageUri)
+//            imageBinding?.imageview?.setImageURI(imageUri)
             imageBinding?.storeUri?.text = imageUri.toString()
             imageBinding?.insert?.visibility=View.GONE
             CoroutineScope(Default).launch {
@@ -282,8 +285,9 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     }
     suspend fun uploadImage(viewBinding:CustomviewImageBinding,imageUri: Uri){
         progressBarFunc(viewBinding)
-        val directory= Environment.getExternalStorageDirectory().absolutePath
-        val imageFile= File("${directory}${imageUri.path?.replace("/document/primary:","/",true)}")
+//        val directory= Environment.getExternalStorageDirectory().absolutePath
+//        val imageFile= File("${directory}${imageUri.path?.replace("/document/primary:","/",true)}")
+        val imageFile= File(RealPathUtil.getRealPath(this, imageUri))
         val compressedImage = Compressor.compress(this, imageFile){
             default(720,1280, Bitmap.CompressFormat.JPEG,60)
         }
@@ -291,6 +295,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         val fileName = imageUri.hashCode().toString()
         StorageDao.uploadProductImage(compressedImage.toUri(), fileName)!!.addOnSuccessListener {
             Log.d("TAG","upload success")
+            viewBinding.imageview.setImageURI(imageUri)
             StorageDao.getImageUrlOfProduct(fileName)!!.addOnSuccessListener {
                 val imageLink=it.toString()
                 viewBinding.storeLink.setText(imageLink)
@@ -300,6 +305,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }.addOnFailureListener {
             Log.d("TAG","uploadImage onFailure: ${it.localizedMessage}")
             viewBinding.retry.visibility=View.VISIBLE
+            viewBinding.imageview.setImageResource(R.drawable.logo_retry_arrow)
             binding.retryToast.visibility=View.VISIBLE
 //            viewBinding.imagesViewImage.setImageResource(R.drawable.grey)
         }
@@ -320,28 +326,4 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
 
 
-
-
-
-
-
-
-
-
-
-//    private fun requestPermission(){
-//        isReadPermissionGranted = ContextCompat.checkSelfPermission(
-//            this,
-//            android.Manifest.permission.READ_EXTERNAL_STORAGE
-//        ) == PackageManager.PERMISSION_GRANTED
-//        val permissionRequest : MutableList<String> = ArrayList()
-//        if (!isReadPermissionGranted){
-//            permissionRequest.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-//            Log.d("TAGG","$isReadPermissionGranted")
-//        }
-//        if (permissionRequest.isNotEmpty()){
-//            permissionLauncher.launch(permissionRequest.toTypedArray())
-//            Log.d("TAGG","${permissionRequest.isNotEmpty()}")
-//        }
-//    }
 }
