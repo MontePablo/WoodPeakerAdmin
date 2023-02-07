@@ -41,6 +41,8 @@ import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
 
 
 class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -106,26 +108,45 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             product.features.add(f.features.text.toString())
         }
         product.description=binding.productDescription.text.toString()
-        var bluePics=ArrayList<String>()
-        var redPics=ArrayList<String>()
-        var blackPics=ArrayList<String>()
-        var yellowPics=ArrayList<String>()
-        var greenPics=ArrayList<String>()
-        var whitePics=ArrayList<String>()
+        var bluePics=ArrayList<HashMap<String,Objects>>()
+        var redPics=ArrayList<HashMap<String,Objects>>()
+        var blackPics=ArrayList<HashMap<String,Objects>>()
+        var yellowPics=ArrayList<HashMap<String,Objects>>()
+        var greenPics=ArrayList<HashMap<String,Objects>>()
+        var whitePics=ArrayList<HashMap<String,Objects>>()
         for(f in imageViewTable) {
             if(f.value.storeAddon.text.toString()=="999") {
                 if (f.value.storeColorId.text.toString() == binding.colBlue.id.toString()) {
-                    bluePics.add(f.value.storeLink.text.toString())
+
+                    val l=HashMap<String,Objects>();
+                    l.put("ImageName",f.value.storeName.text.toString() as Objects)
+                    l.put("ImageLink",f.value.storeLink.text.toString() as Objects)
+                    bluePics.add(l)
                 } else if (f.value.storeColorId.text.toString() == binding.colRed.id.toString()) {
-                    redPics.add(f.value.storeLink.text.toString())
+                    val l=HashMap<String,Objects>();
+                    l.put("ImageName",f.value.storeName.text.toString() as Objects)
+                    l.put("ImageLink",f.value.storeLink.text.toString() as Objects)
+                    redPics.add(l)
                 } else if (f.value.storeColorId.text.toString() == binding.colYellow.id.toString()) {
-                    yellowPics.add(f.value.storeLink.text.toString())
+                    val l=HashMap<String,Objects>();
+                    l.put("ImageName",f.value.storeName.text.toString() as Objects)
+                    l.put("ImageLink",f.value.storeLink.text.toString() as Objects)
+                    yellowPics.add(l)
                 } else if (f.value.storeColorId.text.toString() == binding.colBlack.id.toString()) {
-                    blackPics.add(f.value.storeLink.text.toString())
+                    val l=HashMap<String,Objects>();
+                    l.put("ImageName",f.value.storeName.text.toString() as Objects)
+                    l.put("ImageLink",f.value.storeLink.text.toString() as Objects)
+                    blackPics.add(l)
                 } else if (f.value.storeColorId.text.toString() == binding.colWhite.id.toString()) {
-                    whitePics.add(f.value.storeLink.text.toString())
+                    val l=HashMap<String,Objects>();
+                    l.put("ImageName",f.value.storeName.text.toString() as Objects)
+                    l.put("ImageLink",f.value.storeLink.text.toString() as Objects)
+                    whitePics.add(l)
                 } else if (f.value.storeColorId.text.toString() == binding.colGreen.id.toString()) {
-                    greenPics.add(f.value.storeLink.text.toString())
+                    val l=HashMap<String,Objects>();
+                    l.put("ImageName",f.value.storeName.text.toString() as Objects)
+                    l.put("ImageLink",f.value.storeLink.text.toString() as Objects)
+                    greenPics.add(l)
                 }
             }else{
                 val g=addonTable[f.value.storeAddon.text.toString()]
@@ -134,17 +155,18 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 addonTable.replace(f.value.storeAddon.text.toString(),g)
             }
         }
-        if(bluePics.isNotEmpty()) product.images.put("Blue",bluePics as Objects)
-        if(greenPics.isNotEmpty()) product.images.put("Green",greenPics as Objects)
-        if(whitePics.isNotEmpty()) product.images.put("White",whitePics as Objects)
-        if(blackPics.isNotEmpty()) product.images.put("Black",blackPics as Objects)
-        if(redPics.isNotEmpty()) product.images.put("Red",redPics as Objects)
-        if(yellowPics.isNotEmpty()) product.images.put("Yellow",yellowPics as Objects)
+        product.images.put("Blue",bluePics as Objects)
+        product.images.put("Green",greenPics as Objects)
+        product.images.put("White",whitePics as Objects)
+        product.images.put("Black",blackPics as Objects)
+        product.images.put("Red",redPics as Objects)
+        product.images.put("Yellow",yellowPics as Objects)
         for(f in addonTable){
             val hm=HashMap<String,Objects>()
             hm.put("Name",f.value.addonName.text.toString() as Objects)
             hm.put("Price",f.value.addonPrice.text.toString() as Objects)
             hm.put("ImageLink",f.value.storeLink.text.toString() as Objects)
+            hm.put("ImageName",f.value.storeName.text.toString() as Objects)
             product.addons.add(hm)
         }
         ProductDao.addProduct(product).addOnSuccessListener { Log.d("TAG","productUpload success"); Toast.makeText(this,"sucess", Toast.LENGTH_SHORT).show()
@@ -200,7 +222,8 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding.addonLayout.addView(addonBinding.root)
         addonTable.put(addonBinding.hashCode().toString(),addonBinding)
         addonBinding.addImage.setOnClickListener(View.OnClickListener {
-            addImage(addonBinding.imageLayoutInAddon,addonBinding.hashCode().toString())
+            if(addonBinding.imageLayoutInAddon.isEmpty())
+                addImage(addonBinding.imageLayoutInAddon,addonBinding.hashCode().toString())
         })
         addonBinding.cancel.setOnClickListener(View.OnClickListener {
             addonTable.remove(addonBinding.hashCode().toString())
@@ -321,7 +344,10 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         TODO("Not yet implemented")
     }
 
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        deleteImagesFromCloud(" ")
+    }
 
 
 
