@@ -167,6 +167,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             hm.put("Price",f.value.addonPrice.text.toString() as Objects)
             hm.put("ImageLink",f.value.storeLink.text.toString() as Objects)
             hm.put("ImageName",f.value.storeName.text.toString() as Objects)
+            hm.put("Quantity","0" as Objects)
             product.addons.add(hm)
         }
         ProductDao.addProduct(product).addOnSuccessListener { Log.d("TAG","productUpload success"); Toast.makeText(this,"sucess", Toast.LENGTH_SHORT).show()
