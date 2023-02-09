@@ -29,6 +29,12 @@
             android:layout_height="wrap_content"
             android:hint="product price"
             android:id="@+id/productPrice"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="per SqareFeet"
+            android:layout_marginLeft="160dp"
+            android:textStyle="bold"/>
 
         <Spinner
             android:id="@+id/kitchenShapeSpinner"
