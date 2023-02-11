@@ -10,8 +10,8 @@ import kotlin.collections.HashMap
     var shape=""
     var features=ArrayList<String>()
     var description=""
-    var images=HashMap<String,Objects>() //HashMap<String,HashMap<String,Objects>>()
-    var ratings=ArrayList<HashMap<String, Objects>>()
+    var images=Images() //HashMap<String,HashMap<String,Objects>>()
+    var ratings=ArrayList<Rating>()
     //   map["name"] map["date"] map["comment"] map["image"] map["rating"]
-    var addons=ArrayList<HashMap<String,Objects>>()
+    var addons=ArrayList<Addon>()
 }
