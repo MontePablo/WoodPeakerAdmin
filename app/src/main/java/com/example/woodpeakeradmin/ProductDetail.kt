@@ -3,27 +3,20 @@ package com.example.woodpeakeradmin
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Paint
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.view.isEmpty
 import com.bumptech.glide.Glide
-import com.example.woodpeaker.adapters.SliderAdapter
-import com.example.woodpeaker.daos.FirebaseDao
-import com.example.woodpeaker.daos.UserDao
-import com.example.woodpeaker.databinding.ActivityProductDetailBinding
-import com.example.woodpeaker.databinding.CustomViewAddonBinding
-import com.example.woodpeaker.databinding.CustomViewRatingBinding
-import com.example.woodpeaker.models.Order
-import com.example.woodpeaker.models.Product
 import com.example.woodpeakeradmin.Daos.ProductDao
 import com.example.woodpeakeradmin.Daos.StorageDao
 import com.example.woodpeakeradmin.databinding.ActivityNewAdBinding
@@ -33,8 +26,6 @@ import com.example.woodpeakeradmin.databinding.CustomviewImageBinding
 import com.example.woodpeakeradmin.models.Addon
 import com.example.woodpeakeradmin.models.Product
 import com.google.gson.Gson
-import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
-import com.smarteist.autoimageslider.SliderAnimations
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import kotlinx.coroutines.CoroutineScope
@@ -45,12 +36,19 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.timerTask
 
-object ProductDetail : AppCompatActivity() {
+object ProductDetail : AppCompatActivity() ,AdapterView.OnItemSelectedListener{
     lateinit var binding:ActivityNewAdBinding
 
     lateinit var product: Product
     lateinit var productId:String
-
+    var shouldbeDeletedImages=ArrayList<String>()
+    lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+    var isReadPermissionGranted = false
+    var productShape=""
+    var featureArray=ArrayList<CustomviewFeaturesBinding>()
+    var imageViewTable:Hashtable<Int,CustomviewImageBinding> = Hashtable<Int,CustomviewImageBinding>()
+    var addonTable=Hashtable<String,CustomviewAddonBinding>()
+    lateinit var currentImageLayout:LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityNewAdBinding.inflate(layoutInflater)
@@ -58,21 +56,31 @@ object ProductDetail : AppCompatActivity() {
 
         product =Gson().fromJson(intent.getStringExtra("product"), Product::class.java)
         productId=intent.getStringExtra("productId")!!
+
+
+        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ permissions ->
+            isReadPermissionGranted = permissions[android.Manifest.permission.READ_EXTERNAL_STORAGE] ?: isReadPermissionGranted
+        }
+        currentImageLayout=binding.imageLayoutRed
+        binding.addFeature.setOnClickListener(View.OnClickListener { addFeature() })
+        binding.addImage.setOnClickListener(View.OnClickListener { addImage(currentImageLayout,"999") })
+        binding.addAddon.setOnClickListener(View.OnClickListener { addAddon() })
+        val list= listOf<String>("Island shape kitchen","I shape kitchen","U shape kitchen","L shape kitchen","others")
+        val shapeAdapter: ArrayAdapter<*>
+        shapeAdapter= ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list)
+        binding.kitchenShapeSpinner.adapter=shapeAdapter
+        binding.kitchenShapeSpinner.onItemSelectedListener=this
+
+        binding.colBlack.setOnClickListener(View.OnClickListener { colorBtnPress("Black")})
+        binding.colBlue.setOnClickListener(View.OnClickListener { colorBtnPress("Blue")})
+        binding.colRed.setOnClickListener(View.OnClickListener { colorBtnPress("Red")})
+        binding.colWhite.setOnClickListener(View.OnClickListener { colorBtnPress("White")})
+        binding.colGreen.setOnClickListener(View.OnClickListener { colorBtnPress("Green")})
+        binding.colYellow.setOnClickListener(View.OnClickListener { colorBtnPress("Yellow")})
         loadData()
-        addFeatures()
-        addReviews()
-        addAddons()
-
-         lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
-         var isReadPermissionGranted = false
-
-        lateinit var binding:ActivityNewAdBinding
-        var featureArray=ArrayList<CustomviewFeaturesBinding>()
-        var imageViewTable:Hashtable<Int,CustomviewImageBinding> = Hashtable<Int,CustomviewImageBinding>()
-        var productShape=""
-        var addonTable=Hashtable<String,CustomviewAddonBinding>()
-        lateinit var currentImageLayout:LinearLayout
-
+        binding.publish.setOnClickListener(View.OnClickListener {
+            uploadData()
+        })
     }
     fun loadData(){
         binding.productDescription.setText(product.description)
@@ -85,13 +93,62 @@ object ProductDetail : AppCompatActivity() {
         binding.colWhite.setOnClickListener(View.OnClickListener {  })
         binding.colGreen.setOnClickListener(View.OnClickListener {  })
         binding.colYellow.setOnClickListener(View.OnClickListener {  })
-
+        var i=0
+        for(f in product.images.redLink){
+            scndAddImage(binding.imageLayoutRed, product.images.redLink[i], product.images.redName[i])
+            i++
+        }
+        i=0
+        for(f in product.images.whiteLink){
+            scndAddImage(binding.imageLayoutWhite, product.images.whiteLink[i], product.images.whiteName[i])
+            i++
+        }
+            i=0
+        for(f in product.images.blackLink){
+            scndAddImage(binding.imageLayoutBlack, product.images.blackLink[i], product.images.blackName[i])
+            i++
+        }
+        i=0
+        for(f in product.images.blueLink){
+            scndAddImage(binding.imageLayoutBlue, product.images.blueLink[i], product.images.blueName[i])
+            i++
+        }
+        i=0
+        for(f in product.images.yellowLink){
+            scndAddImage(binding.imageLayoutYellow, product.images.yellowLink[i], product.images.yellowName[i])
+            i++
+        }
+        i=0
+        for(f in product.images.greenLink){
+            scndAddImage(binding.imageLayoutGreen, product.images.greenLink[i], product.images.greenName[i])
+            i++
+        }
+        for(f in product.features)
+            addFeature2(f)
+        for(f in product.addons){
+            addAddon2(f)
+        }
+    }
+    private fun scndAddImage(imageLayout: LinearLayout, s: String, s1: String) {
+        val imageBinding=CustomviewImageBinding.inflate(layoutInflater)
+        Glide.with(imageBinding.imageview.context).load(s).into(imageBinding.imageview)
+        imageBinding.storeLink.text=s
+        imageBinding.storeName.text=s1
+        imageBinding.delete.setOnClickListener(View.OnClickListener {
+            shouldbeDeletedImages.add(s1)
+            imageLayout.removeView(imageBinding.root)
+        })
 
     }
+    fun deleteImages(arr:ArrayList<String>){
+        for(f in arr){
+            StorageDao.deleteProductImage(f)
+        }
+    }
 
-    fun deleteImagesFromCloud(link:String){
-        if(link.isNotBlank()){
-            StorageDao.deleteProductImage(link).addOnFailureListener {
+    fun deleteImagesFromCloud(name:String){
+        if(name.isNotBlank()){
+            StorageDao.deleteProductImage(name).addOnFailureListener {
                 Log.d("TAG", "Delete failed:${it.localizedMessage}")
             }
         }else {
@@ -105,7 +162,6 @@ object ProductDetail : AppCompatActivity() {
     }
 
     fun uploadData(){
-        val product=Product()
         product.title=binding.productName.text.toString()
         product.price=binding.productPrice.text.toString()
         product.shape=productShape
@@ -151,10 +207,10 @@ object ProductDetail : AppCompatActivity() {
             addon.quantity="0"
             product.addons.add(addon)
         }
-        ProductDao.addProduct(product).addOnSuccessListener { Log.d("TAG","productUpload success"); Toast.makeText(this,"sucess", Toast.LENGTH_SHORT).show()
+        ProductDao.updateProduct(productId,product).addOnSuccessListener { Log.d("TAG","Update success"); Toast.makeText(this,"sucess", Toast.LENGTH_SHORT).show()
 //                        startActivity(Intent(this,MainActivity::class.java))
 //                        finish()
-        }.addOnFailureListener { Log.d("TAG","productUpload failed:${it.localizedMessage}");Toast.makeText(this,"failed! retry later",
+        }.addOnFailureListener { Log.d("TAG","UPdate failed:${it.localizedMessage}");Toast.makeText(this,"failed! retry later",
             Toast.LENGTH_SHORT).show()}
     }
     fun colorBtnPress(col:String){
@@ -212,9 +268,38 @@ object ProductDetail : AppCompatActivity() {
             binding.addonLayout.removeView(addonBinding.root)
         })
     }
+    fun addAddon2(addon: Addon){
+        val addonBinding = CustomviewAddonBinding.inflate(layoutInflater)
+        addonBinding.addonPrice.setText(addon.price)
+        addonBinding.addonName.setText(addon.name)
+        val imageBinding=CustomviewImageBinding.inflate(layoutInflater)
+        imageBinding.delete.setOnClickListener(View.OnClickListener { shouldbeDeletedImages.add(addon.imageName) })
+        addonBinding.imageLayoutInAddon.addView(imageBinding.root)
+        Glide.with(imageBinding.imageview.context).load(addon.imageLink).into(imageBinding.imageview)
+        binding.addonLayout.addView(addonBinding.root)
+        addonTable.put(addonBinding.hashCode().toString(),addonBinding)
+        addonBinding.addImage.setOnClickListener(View.OnClickListener {
+            if(addonBinding.imageLayoutInAddon.isEmpty())
+                addImage(addonBinding.imageLayoutInAddon,addonBinding.hashCode().toString())
+        })
+        addonBinding.cancel.setOnClickListener(View.OnClickListener {
+            addonTable.remove(addonBinding.hashCode().toString())
+            binding.addonLayout.removeView(addonBinding.root)
+        })
+    }
     private fun addFeature() {
         val featuresBinding= CustomviewFeaturesBinding.inflate(layoutInflater)
         featureArray.add(featuresBinding)
+        featuresBinding.cancel.setOnClickListener(View.OnClickListener {
+            featureArray.remove(featuresBinding)
+            binding.featuresLayout.removeView(featuresBinding.root)
+        })
+        binding.featuresLayout.addView(featuresBinding.root)
+    }
+    private fun addFeature2(s:String) {
+        val featuresBinding= CustomviewFeaturesBinding.inflate(layoutInflater)
+        featureArray.add(featuresBinding)
+        featuresBinding.features.setText(s)
         featuresBinding.cancel.setOnClickListener(View.OnClickListener {
             featureArray.remove(featuresBinding)
             binding.featuresLayout.removeView(featuresBinding.root)
@@ -261,6 +346,7 @@ object ProductDetail : AppCompatActivity() {
         imageLayout.addView(imageBinding.root)
         imageBinding.storeColorId.setText(imageLayout.id.toString())
     }
+
     fun photoPick(requestCode: Int) {
         val intent = Intent()
         intent.type = "image/*"
@@ -328,6 +414,7 @@ object ProductDetail : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         deleteImagesFromCloud(" ")
+        deleteImages(shouldbeDeletedImages)
     }
 
 

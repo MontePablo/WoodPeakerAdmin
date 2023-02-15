@@ -17,5 +17,9 @@ object ProductDao {
     fun getProduct(id:String): Task<DocumentSnapshot> {
         return productCollection.document(id).get()
     }
+    fun updateProduct(id:String,product: Product):Task<Void>{
+        return productCollection.document(id).set(product)
+
+    }
 
 }

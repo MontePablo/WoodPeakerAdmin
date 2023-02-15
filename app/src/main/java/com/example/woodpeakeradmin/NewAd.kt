@@ -44,6 +44,7 @@ import android.os.Build.VERSION.SDK_INT
 import androidx.core.view.isEmpty
 import androidx.core.view.isNotEmpty
 import com.example.woodpeakeradmin.models.Addon
+import id.zelory.compressor.loadBitmap
 
 
 class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -82,7 +83,9 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding.colGreen.setOnClickListener(View.OnClickListener { colorBtnPress("Green")})
         binding.colYellow.setOnClickListener(View.OnClickListener { colorBtnPress("Yellow")})
 
-
+        binding.publish.setOnClickListener(View.OnClickListener {
+            uploadData()
+        })
     }
 
     fun deleteImagesFromCloud(link:String){

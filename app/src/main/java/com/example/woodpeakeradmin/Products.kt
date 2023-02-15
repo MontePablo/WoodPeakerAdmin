@@ -3,14 +3,7 @@ package com.example.woodpeakeradmin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.woodpeaker.adapters.ProductsAdapter
-import com.example.woodpeaker.adapters.productFuntions
-import com.example.woodpeaker.daos.ProductDao
-import com.example.woodpeaker.databinding.ActivityProductsBinding
-import com.example.woodpeaker.models.Product
 import com.example.woodpeakeradmin.Daos.ProductDao
 import com.example.woodpeakeradmin.adapters.ProductsAdapter
 import com.example.woodpeakeradmin.adapters.productFuntions
