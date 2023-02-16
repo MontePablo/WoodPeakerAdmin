@@ -70,7 +70,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding.addFeature.setOnClickListener(View.OnClickListener { addFeature() })
         binding.addImage.setOnClickListener(View.OnClickListener { addImage(currentImageLayout,"999") })
         binding.addAddon.setOnClickListener(View.OnClickListener { addAddon() })
-        val list= listOf<String>("Island shape kitchen","I shape kitchen","U shape kitchen","L shape kitchen","others")
+        val list= listOf<String>("Island shape kitchen","I shape kitchen","U shape kitchen","L shape kitchen")
         val shapeAdapter:ArrayAdapter<*>
         shapeAdapter= ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list)
         binding.kitchenShapeSpinner.adapter=shapeAdapter

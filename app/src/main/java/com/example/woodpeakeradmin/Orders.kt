@@ -8,6 +8,7 @@ import com.example.woodpeakeradmin.Daos.OrderDao
 import com.example.woodpeakeradmin.adapters.OrderAdapter
 import com.example.woodpeakeradmin.adapters.OrderFunctions
 import com.example.woodpeakeradmin.databinding.ActivityOrdersBinding
+import com.example.woodpeakeradmin.models.Order
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.Query
 import com.google.gson.Gson

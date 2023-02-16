@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
+import com.example.woodpeakeradmin.Daos.OrderDao
 import com.example.woodpeakeradmin.Daos.ProductDao
 import com.example.woodpeakeradmin.databinding.ActivityOrderDetailBinding
 import com.example.woodpeakeradmin.models.Order
@@ -38,6 +39,11 @@ class OrderDetail : AppCompatActivity() {
         binding.orderDetailDateTime.text=order.dateTime
         binding.paymentStatus.text=order.paymentId
         binding.orderDetailDeliveryInstruction.text=order.instruction
+        binding.updateInstruction.setOnClickListener(View.OnClickListener {
+            val s=binding.newDeliveryInstruction.text.toString()
+            order.instruction=order.instruction+"\n$s"
+            OrderDao.updateOrder(order,orderId)
+        })
 
 
     }
