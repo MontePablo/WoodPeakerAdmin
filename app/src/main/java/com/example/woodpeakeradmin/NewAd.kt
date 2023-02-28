@@ -23,8 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import com.example.woodpeakeradmin.Daos.ProductDao
-import com.example.woodpeakeradmin.Daos.StorageDao
 import com.example.woodpeakeradmin.databinding.*
 import com.example.woodpeakeradmin.models.Product
 import id.zelory.compressor.Compressor
@@ -43,6 +41,8 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import androidx.core.view.isEmpty
 import androidx.core.view.isNotEmpty
+import com.example.woodpeaker.daos.ProductDao
+import com.example.woodpeaker.daos.StorageDao
 import com.example.woodpeakeradmin.models.Addon
 import id.zelory.compressor.loadBitmap
 

@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.woodpeakeradmin.Daos.OrderDao
+import com.example.woodpeaker.daos.OrderDao
 import com.example.woodpeakeradmin.adapters.OrderAdapter
 import com.example.woodpeakeradmin.adapters.OrderFunctions
 import com.example.woodpeakeradmin.databinding.ActivityOrdersBinding
@@ -35,5 +35,15 @@ class Orders : AppCompatActivity(), OrderFunctions {
         intent.putExtra("order", gson.toJson(order))
         intent.putExtra("orderId",orderId)
         startActivity(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.stopListening()
     }
 }

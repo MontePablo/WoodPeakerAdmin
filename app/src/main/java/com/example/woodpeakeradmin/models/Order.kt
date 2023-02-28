@@ -6,6 +6,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class Order {
+    var discountPercent=""
     var price=""
     var productId=""
     var title=""
@@ -22,6 +23,7 @@ class Order {
     var totalPrice=""
     var finalPriceAftrDiscnt=""
     var instruction=""
+    var address=""
 
 
 }

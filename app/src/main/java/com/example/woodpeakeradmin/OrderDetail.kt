@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.Glide
-import com.example.woodpeakeradmin.Daos.OrderDao
-import com.example.woodpeakeradmin.Daos.ProductDao
+import com.example.woodpeaker.daos.OrderDao
+import com.example.woodpeaker.daos.ProductDao
 import com.example.woodpeakeradmin.databinding.ActivityOrderDetailBinding
 import com.example.woodpeakeradmin.models.Order
 import com.example.woodpeakeradmin.models.Product
@@ -29,6 +29,7 @@ class OrderDetail : AppCompatActivity() {
                 val product=document.toObject(Product::class.java)
                 val gson = Gson()
                 val intent = Intent(this, ProductDetail::class.java)
+                intent.putExtra("productId",document.id)
                 intent.putExtra("product", gson.toJson(product))
                 startActivity(intent)
             }

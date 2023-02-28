@@ -1,4 +1,4 @@
-package com.example.woodpeakeradmin.Daos
+package com.example.woodpeaker.daos
 
 import android.net.Uri
 import android.util.Log

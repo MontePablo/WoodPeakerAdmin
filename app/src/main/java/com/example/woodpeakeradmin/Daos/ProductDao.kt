@@ -1,4 +1,4 @@
-package com.example.woodpeakeradmin.Daos
+package com.example.woodpeaker.daos
 
 import android.util.Log
 import com.example.woodpeakeradmin.models.Product
@@ -9,7 +9,7 @@ import com.google.firebase.firestore.Query
 
 object ProductDao {
     var productCollection=FirebaseDao.db.collection("products")
-    fun addProduct(product:Product): Task<Void> {
+    fun addProduct(product: Product): Task<Void> {
         var v= productCollection.document().set(product)
         Log.d("TAG", "add product:success")
         return v

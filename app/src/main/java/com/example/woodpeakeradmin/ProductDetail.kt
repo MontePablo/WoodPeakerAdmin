@@ -17,8 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.view.isEmpty
 import com.bumptech.glide.Glide
-import com.example.woodpeakeradmin.Daos.ProductDao
-import com.example.woodpeakeradmin.Daos.StorageDao
+import com.example.woodpeaker.daos.ProductDao
+import com.example.woodpeaker.daos.StorageDao
 import com.example.woodpeakeradmin.databinding.ActivityNewAdBinding
 import com.example.woodpeakeradmin.databinding.CustomviewAddonBinding
 import com.example.woodpeakeradmin.databinding.CustomviewFeaturesBinding
