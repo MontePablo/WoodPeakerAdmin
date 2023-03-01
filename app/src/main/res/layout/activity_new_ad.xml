@@ -67,40 +67,82 @@
                     android:id="@+id/imageLayoutBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal">
+<!--                    <TextView-->
+<!--                        android:id="blackid"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:visibility="gone"-->
+<!--                        android:text="black"/>-->
+                </LinearLayout>
 
                 <LinearLayout
                     android:visibility="gone"
                     android:id="@+id/imageLayoutWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal">
+<!--                    <TextView-->
+<!--                        android:id="whiteid"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:visibility="gone"-->
+<!--                        android:text="white"/>-->
+                </LinearLayout>
 
                 <LinearLayout
                     android:visibility="gone"
                     android:id="@+id/imageLayoutYellow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal">
+<!--                    <TextView-->
+<!--                        android:id="yellowid"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:visibility="gone"-->
+<!--                        android:text="yellow"/>-->
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/imageLayoutRed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
+                    android:orientation="horizontal" >
+<!--                    <TextView-->
+<!--                        android:id="redid"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:visibility="gone"-->
+<!--                        android:text="red"/>-->
+                </LinearLayout>
 
                 <LinearLayout
                     android:visibility="gone"
                     android:id="@+id/imageLayoutBlue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal">
+<!--                    <TextView-->
+<!--                        android:id="blueid"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:visibility="gone"-->
+<!--                        android:text="blue"/>-->
+                </LinearLayout>
                 <LinearLayout
                     android:visibility="gone"
                     android:id="@+id/imageLayoutGreen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal">
+<!--                    <TextView-->
+<!--                        android:id="greenid"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:visibility="gone"-->
+<!--                        android:text="green"/>-->
+                </LinearLayout>
             </LinearLayout>
 
         </HorizontalScrollView>

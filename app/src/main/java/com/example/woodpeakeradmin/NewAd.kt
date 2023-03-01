@@ -115,7 +115,11 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
         for(f in imageViewTable) {
             if(f.value.storeAddon.text.toString()=="999") {
+                Log.d("TAG","imageView while uploadData: $f")
                 if (f.value.storeColorId.text.toString() == binding.colBlue.id.toString()) {
+                    Log.d("TAG","f.value.storeColorId.text.toString() ="+f.value.storeColorId.text.toString())
+                    Log.d("TAG","binding.colBlue.id.toString()="+binding.colBlue.id.toString())
+                    Log.d("TAG","f.value.storeLink.text.toString()="+f.value.storeLink.text.toString())
                     product.images.blueLink.add(f.value.storeLink.text.toString())
                     product.images.blueName.add(f.value.storeName.text.toString())
                 } else if (f.value.storeColorId.text.toString() == binding.colRed.id.toString()) {
@@ -256,6 +260,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         imageBinding.insert.setOnClickListener(View.OnClickListener {
             photoPick(imageBinding.hashCode())
             imageViewTable.put(imageBinding.hashCode(),imageBinding)
+            Log.d("TAG","imageView: $imageBinding")
         })
         imageLayout.addView(imageBinding.root)
         imageBinding.storeColorId.setText(imageLayout.id.toString())
@@ -303,6 +308,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 val imageLink=it.toString()
                 viewBinding.storeLink.setText(imageLink)
                 viewBinding.storeName.setText(fileName)
+                Log.d("TAG","imageView: $viewBinding")
                 Log.d("TAG","getting Url success ${imageLink}")
             }
         }.addOnFailureListener {
@@ -326,7 +332,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        deleteImagesFromCloud(" ")
+        deleteImagesFromCloud("")
     }
 
 
