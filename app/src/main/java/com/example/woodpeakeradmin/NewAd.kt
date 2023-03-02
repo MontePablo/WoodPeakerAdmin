@@ -113,36 +113,32 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
         product.description=binding.productDescription.text.toString()
 
-        for(f in imageViewTable) {
-            if(f.value.storeAddon.text.toString()=="999") {
-                Log.d("TAG","imageView while uploadData: $f")
-                if (f.value.storeColorId.text.toString() == binding.colBlue.id.toString()) {
-                    Log.d("TAG","f.value.storeColorId.text.toString() ="+f.value.storeColorId.text.toString())
-                    Log.d("TAG","binding.colBlue.id.toString()="+binding.colBlue.id.toString())
-                    Log.d("TAG","f.value.storeLink.text.toString()="+f.value.storeLink.text.toString())
-                    product.images.blueLink.add(f.value.storeLink.text.toString())
-                    product.images.blueName.add(f.value.storeName.text.toString())
-                } else if (f.value.storeColorId.text.toString() == binding.colRed.id.toString()) {
-                    product.images.redName.add(f.value.storeName.text.toString())
-                    product.images.redLink.add(f.value.storeLink.text.toString())
-                } else if (f.value.storeColorId.text.toString() == binding.colYellow.id.toString()) {
-                    product.images.yellowName.add(f.value.storeName.text.toString())
-                    product.images.yellowLink.add(f.value.storeLink.text.toString())
-                } else if (f.value.storeColorId.text.toString() == binding.colBlack.id.toString()) {
-                    product.images.blackName.add(f.value.storeName.text.toString())
-                    product.images.blackLink.add(f.value.storeLink.text.toString())
-                } else if (f.value.storeColorId.text.toString() == binding.colWhite.id.toString()) {
-                    product.images.whiteName.add(f.value.storeName.text.toString())
-                    product.images.whiteLink.add(f.value.storeLink.text.toString())
-                } else if (f.value.storeColorId.text.toString() == binding.colGreen.id.toString()) {
-                    product.images.greenName.add(f.value.storeName.text.toString())
-                    product.images.greenLink.add(f.value.storeLink.text.toString())
+        for((a,f) in imageViewTable) {
+            if(f.storeAddon.text.toString()=="999") {
+                if (f.storeColorId.text.toString() == binding.imageLayoutBlue.id.toString()) {
+                    product.images.blueLink.add(f.storeLink.text.toString())
+                    product.images.blueName.add(f.storeName.text.toString())
+                } else if (f.storeColorId.text.toString() == binding.imageLayoutRed.id.toString()) {
+                    product.images.redName.add(f.storeName.text.toString())
+                    product.images.redLink.add(f.storeLink.text.toString())
+                } else if (f.storeColorId.text.toString() == binding.imageLayoutYellow.id.toString()) {
+                    product.images.yellowName.add(f.storeName.text.toString())
+                    product.images.yellowLink.add(f.storeLink.text.toString())
+                } else if (f.storeColorId.text.toString() == binding.imageLayoutBlack.id.toString()) {
+                    product.images.blackName.add(f.storeName.text.toString())
+                    product.images.blackLink.add(f.storeLink.text.toString())
+                } else if (f.storeColorId.text.toString() == binding.imageLayoutWhite.id.toString()) {
+                    product.images.whiteName.add(f.storeName.text.toString())
+                    product.images.whiteLink.add(f.storeLink.text.toString())
+                } else if (f.storeColorId.text.toString() == binding.imageLayoutGreen.id.toString()) {
+                    product.images.greenName.add(f.storeName.text.toString())
+                    product.images.greenLink.add(f.storeLink.text.toString())
                 }
             }else{
-                val g=addonTable[f.value.storeAddon.text.toString()]
-                g?.storeLink?.text=f.value.storeLink.text.toString()
-                g?.storeName?.text=f.value.storeName.text.toString()
-                addonTable.replace(f.value.storeAddon.text.toString(),g)
+                val g=addonTable[f.storeAddon.text.toString()]
+                g?.storeLink?.text=f.storeLink.text.toString()
+                g?.storeName?.text=f.storeName.text.toString()
+                addonTable.replace(f.storeAddon.text.toString(),g)
             }
         }
         for(f in addonTable){
