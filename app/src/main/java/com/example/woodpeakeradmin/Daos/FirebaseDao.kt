@@ -1,5 +1,4 @@
-package com.example.woodpeaker.daos
-
+package com.example.woodpeakeradmin.Daos
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -10,7 +9,7 @@ object FirebaseDao {
     val db = Firebase.firestore
 //    val database = Firebase.database
     var auth: FirebaseAuth = Firebase.auth
-//    init {
-//        Log.d(TAG,"firebaseDao: uid: ${auth.uid} null? ${auth.uid==null}  currentuser: ${auth.currentUser} null? ${auth.currentUser==null} ")
-//    }
+    init {
+        Log.d("TAG","firebaseDao: uid: ${auth.uid} null? ${auth.uid==null}  currentuser: ${auth.currentUser} null? ${auth.currentUser==null} ")
+    }
 }
