@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.woodpeaker.daos.ProductDao
+import com.example.woodpeakeradmin.Daos.ProductDao
 import com.example.woodpeakeradmin.adapters.ProductsAdapter
 import com.example.woodpeakeradmin.adapters.productFuntions
 import com.example.woodpeakeradmin.databinding.ActivityProductsBinding
@@ -22,13 +22,19 @@ class Products : AppCompatActivity(), productFuntions {
         setContentView(binding.root)
 
 
-        binding.recyclerview.layoutManager= LinearLayoutManager(this)
-        val query: Query = ProductDao.productCollection.orderBy("price", Query.Direction.ASCENDING)
+//        binding.recyclerview.layoutManager= LinearLayoutManager(this)
+        val query: Query = ProductDao.productCollection.orderBy("price", Query.Direction.DESCENDING)
         val options: FirestoreRecyclerOptions<Product> =
             FirestoreRecyclerOptions.Builder<Product>().setQuery(query,Product::class.java).build()
         adapter= ProductsAdapter(options,this)
         binding.recyclerview.adapter=adapter
-
+        binding.recyclerview.setLayoutManager(
+            WrapContentLinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+        )
 
 
     }

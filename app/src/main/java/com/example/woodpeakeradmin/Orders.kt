@@ -1,10 +1,10 @@
 package com.example.woodpeakeradmin
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.woodpeaker.daos.OrderDao
+import com.example.woodpeakeradmin.Daos.OrderDao
 import com.example.woodpeakeradmin.adapters.OrderAdapter
 import com.example.woodpeakeradmin.adapters.OrderFunctions
 import com.example.woodpeakeradmin.databinding.ActivityOrdersBinding
@@ -22,16 +22,23 @@ class Orders : AppCompatActivity(), OrderFunctions {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.recyclerview.layoutManager= LinearLayoutManager(this)
+//        binding.recyclerview.layoutManager= LinearLayoutManager(this)
         val query: Query = OrderDao.reference.orderBy("dateTime", Query.Direction.ASCENDING)
         val options: FirestoreRecyclerOptions<Order> = FirestoreRecyclerOptions.Builder<Order>().setQuery(query, Order::class.java).build()
         adapter= OrderAdapter(options,this)
         binding.recyclerview.adapter=adapter
+        binding.recyclerview.setLayoutManager(
+            WrapContentLinearLayoutManager(
+                this,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+        )
     }
 
     override fun orderClick(order: Order, orderId: String) {
         val gson = Gson()
-        val intent = Intent(this, Order::class.java)
+        val intent = Intent(this, OrderDetail::class.java)
         intent.putExtra("order", gson.toJson(order))
         intent.putExtra("orderId",orderId)
         startActivity(intent)

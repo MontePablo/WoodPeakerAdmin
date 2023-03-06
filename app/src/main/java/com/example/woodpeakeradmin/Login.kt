@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import com.example.woodpeakeradmin.Daos.FirebaseDao
+import android.widget.Toast
+import com.example.woodpeakeradmin.Daos.FirebaseDao.auth
+import com.example.woodpeakeradmin.Daos.UserDao
 import com.example.woodpeakeradmin.databinding.ActivityLoginBinding
+import com.example.woodpeakeradmin.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -18,7 +21,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 class Login : AppCompatActivity() {
     lateinit var googleSignInClient: GoogleSignInClient
-    lateinit var binding: ActivityLoginBinding
+    lateinit var binding:ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivityLoginBinding.inflate(layoutInflater)
@@ -56,13 +59,13 @@ class Login : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String?) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         allButtonsVisibility(View.INVISIBLE)
-        FirebaseDao.auth.signInWithCredential(credential)
+        auth.signInWithCredential(credential)
             .addOnCompleteListener(this,
                 OnCompleteListener<AuthResult> { task ->
                     if (task.isSuccessful) {
                         Log.d("TAG", "signInWithCredential:success")
                         Log.d("TAG", "task.getResult().toString()=" + task.result.toString())
-                        updateUI(FirebaseDao.auth.currentUser)
+                        updateUI(auth.currentUser)
                     } else {
                         Log.d("TAG", "signInWithCredential:failure", task.exception)
                         updateUI(null)
@@ -73,20 +76,28 @@ class Login : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(FirebaseDao.auth.currentUser!=null){
-                startActivity(Intent(this, MainActivity::class.java))
+        if(auth.currentUser!=null){
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
-        finish()
     }
 
     fun updateUI(firebaseUser: FirebaseUser?) {
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
+        if(firebaseUser!=null){
+            UserDao.getUser(firebaseUser!!.uid).addOnSuccessListener { document->
+                if(document.exists()){
+                    Toast.makeText(this,"welcome Back!", Toast.LENGTH_SHORT).show()
+                }
+                    startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }.addOnFailureListener { exception-> Log.d("TAG","updateUI:onFailure:"+exception.localizedMessage) }
+        }
     }
 
     fun allButtonsVisibility(visib: Int) {
         binding.google.visibility=visib
-        binding.progressBar.visibility=when(visib==View.INVISIBLE){ true-> View.VISIBLE false-> View.INVISIBLE}
+
+        binding.progressBar.visibility=when(visib== View.INVISIBLE){ true-> View.VISIBLE false-> View.INVISIBLE}
     }
 
 }

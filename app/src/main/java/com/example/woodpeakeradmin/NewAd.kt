@@ -41,8 +41,8 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import androidx.core.view.isEmpty
 import androidx.core.view.isNotEmpty
-import com.example.woodpeaker.daos.ProductDao
-import com.example.woodpeaker.daos.StorageDao
+import com.example.woodpeakeradmin.Daos.ProductDao
+import com.example.woodpeakeradmin.Daos.StorageDao
 import com.example.woodpeakeradmin.models.Addon
 import id.zelory.compressor.loadBitmap
 

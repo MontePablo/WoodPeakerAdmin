@@ -17,9 +17,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.view.isEmpty
 import com.bumptech.glide.Glide
-import com.example.woodpeaker.daos.ProductDao
-import com.example.woodpeaker.daos.StorageDao
-import com.example.woodpeakeradmin.databinding.ActivityNewAdBinding
+import com.example.woodpeakeradmin.Daos.ProductDao
+import com.example.woodpeakeradmin.Daos.StorageDao
+import com.example.woodpeakeradmin.databinding.ActivityProductDetailBinding
 import com.example.woodpeakeradmin.databinding.CustomviewAddonBinding
 import com.example.woodpeakeradmin.databinding.CustomviewFeaturesBinding
 import com.example.woodpeakeradmin.databinding.CustomviewImageBinding
@@ -36,8 +36,14 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.timerTask
 
-object ProductDetail : AppCompatActivity() ,AdapterView.OnItemSelectedListener{
-    lateinit var binding:ActivityNewAdBinding
+//class ProductDetail : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_product_detail)
+//    }
+//}
+class ProductDetail : AppCompatActivity() , AdapterView.OnItemSelectedListener{
+    lateinit var binding:ActivityProductDetailBinding
 
     lateinit var product: Product
     lateinit var productId:String
@@ -46,15 +52,15 @@ object ProductDetail : AppCompatActivity() ,AdapterView.OnItemSelectedListener{
     var isReadPermissionGranted = false
     var productShape=""
     var featureArray=ArrayList<CustomviewFeaturesBinding>()
-    var imageViewTable:Hashtable<Int,CustomviewImageBinding> = Hashtable<Int,CustomviewImageBinding>()
-    var addonTable=Hashtable<String,CustomviewAddonBinding>()
-    lateinit var currentImageLayout:LinearLayout
+    var imageViewTable: Hashtable<Int, CustomviewImageBinding> = Hashtable<Int,CustomviewImageBinding>()
+    var addonTable=Hashtable<String, CustomviewAddonBinding>()
+    lateinit var currentImageLayout: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityNewAdBinding.inflate(layoutInflater)
+        binding= ActivityProductDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        product =Gson().fromJson(intent.getStringExtra("product"), Product::class.java)
+        product = Gson().fromJson(intent.getStringExtra("product"), Product::class.java)
         productId=intent.getStringExtra("productId")!!
 
 
@@ -103,7 +109,7 @@ object ProductDetail : AppCompatActivity() ,AdapterView.OnItemSelectedListener{
             scndAddImage(binding.imageLayoutWhite, product.images.whiteLink[i], product.images.whiteName[i])
             i++
         }
-            i=0
+        i=0
         for(f in product.images.blackLink){
             scndAddImage(binding.imageLayoutBlack, product.images.blackLink[i], product.images.blackName[i])
             i++
@@ -415,6 +421,7 @@ object ProductDetail : AppCompatActivity() ,AdapterView.OnItemSelectedListener{
         super.onBackPressed()
         deleteImagesFromCloud(" ")
         deleteImages(shouldbeDeletedImages)
+        finish()
     }
 
 

@@ -13,6 +13,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.woodpeakeradmin.Daos.FirebaseDao
 import com.example.woodpeakeradmin.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -110,6 +111,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun logout(view: View) {
+        FirebaseDao.auth.signOut()
+        finish()
+        startActivity(Intent(this, Login::class.java))
     }
 
 }

@@ -39,6 +39,12 @@
             android:layout_weight="1"
             android:onClick="allAds"
             android:text="all ads" />
+        <Button
+            android:onClick="logout"
+            android:id="@+id/logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="logout"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
