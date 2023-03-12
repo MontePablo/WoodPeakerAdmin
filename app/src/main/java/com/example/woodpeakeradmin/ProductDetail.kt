@@ -100,32 +100,32 @@ class ProductDetail : AppCompatActivity() , AdapterView.OnItemSelectedListener{
         binding.colGreen.setOnClickListener(View.OnClickListener {  })
         binding.colYellow.setOnClickListener(View.OnClickListener {  })
         var i=0
-        for(f in product.images.redLink){
+        while(i< product.images.redLink.size){
             scndAddImage(binding.imageLayoutRed, product.images.redLink[i], product.images.redName[i])
             i++
         }
         i=0
-        for(f in product.images.whiteLink){
+        while(i< product.images.whiteLink.size){
             scndAddImage(binding.imageLayoutWhite, product.images.whiteLink[i], product.images.whiteName[i])
             i++
         }
         i=0
-        for(f in product.images.blackLink){
+        while(i < product.images.blackLink.size){
             scndAddImage(binding.imageLayoutBlack, product.images.blackLink[i], product.images.blackName[i])
             i++
         }
         i=0
-        for(f in product.images.blueLink){
+        while(i < product.images.blueLink.size){
             scndAddImage(binding.imageLayoutBlue, product.images.blueLink[i], product.images.blueName[i])
             i++
         }
         i=0
-        for(f in product.images.yellowLink){
+        while(i < product.images.yellowLink.size){
             scndAddImage(binding.imageLayoutYellow, product.images.yellowLink[i], product.images.yellowName[i])
             i++
         }
         i=0
-        for(f in product.images.greenLink){
+        while(i < product.images.greenLink.size){
             scndAddImage(binding.imageLayoutGreen, product.images.greenLink[i], product.images.greenName[i])
             i++
         }
@@ -144,6 +144,7 @@ class ProductDetail : AppCompatActivity() , AdapterView.OnItemSelectedListener{
             shouldbeDeletedImages.add(s1)
             imageLayout.removeView(imageBinding.root)
         })
+        imageLayout.addView(imageBinding.root)
 
     }
     fun deleteImages(arr:ArrayList<String>){
