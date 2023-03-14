@@ -7,15 +7,27 @@ import com.google.firebase.storage.UploadTask
 
 object StorageDao {
     val productImageRef = FirebaseStorage.getInstance().getReference("productImages")
+    val productModelsRef = FirebaseStorage.getInstance().getReference("models")
+
     fun uploadProductImage(imagePathUri: Uri?, fileName: String?): UploadTask? {
         Log.d("TAG", "storageDao uploadImage start")
         return productImageRef.child(fileName!!).putFile(imagePathUri!!)
     }
+    fun upload3dModel(modelPathUri: Uri?, fileName: String?): UploadTask? {
+        Log.d("TAG", "storageDao upload3dModel start")
+        return productModelsRef.child(fileName!!).putFile(modelPathUri!!)
+    }
     fun deleteProductImage(fileName: String?): Task<Void> {
         return productImageRef.child(fileName!!).delete()
     }
+    fun deleteProductModel(fileName: String?): Task<Void> {
+        return productModelsRef.child(fileName!!).delete()
+    }
     fun getImageUrlOfProduct(filename: String?): Task<Uri?>? {
         return productImageRef.child(filename!!).downloadUrl
+    }
+    fun get3dModelUrl(filename: String?): Task<Uri?>? {
+        return productModelsRef.child(filename!!).downloadUrl
     }
 
 }

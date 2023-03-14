@@ -50,7 +50,8 @@ import id.zelory.compressor.loadBitmap
 class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
     private var isReadPermissionGranted = false
-
+    var model3dlink=""
+    var model3dname=""
     lateinit var binding:ActivityNewAdBinding
     var featureArray=ArrayList<CustomviewFeaturesBinding>()
     var imageViewTable:Hashtable<Int,CustomviewImageBinding> = Hashtable<Int,CustomviewImageBinding>()
@@ -82,7 +83,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         binding.colWhite.setOnClickListener(View.OnClickListener { colorBtnPress("White")})
         binding.colGreen.setOnClickListener(View.OnClickListener { colorBtnPress("Green")})
         binding.colYellow.setOnClickListener(View.OnClickListener { colorBtnPress("Yellow")})
-
+        binding.add3dModel.setOnClickListener(View.OnClickListener {model3dPick()  })
         binding.publish.setOnClickListener(View.OnClickListener {
             uploadData()
         })
@@ -99,6 +100,13 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                     .addOnFailureListener {
                         Log.d("TAG", "Delete failed:${it.localizedMessage}")
                     }
+            }
+        }
+    }
+    fun delete3dModelFromCloud(){
+        if(model3dname.isNotBlank()){
+            StorageDao.deleteProductModel(model3dname).addOnFailureListener {
+                Log.d("TAG", "Delete failed:${it.localizedMessage}")
             }
         }
     }
@@ -150,6 +158,8 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
             addon.quantity="0"
             product.addons.add(addon)
         }
+        product.model3dname=this.model3dname
+        product.model3dlink=this.model3dlink
         ProductDao.addProduct(product).addOnSuccessListener { Log.d("TAG","productUpload success"); Toast.makeText(this,"sucess", Toast.LENGTH_SHORT).show()
 //                        startActivity(Intent(this,MainActivity::class.java))
 //                        finish()
@@ -238,6 +248,26 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
         timer.schedule(timertask,0,15)
     }
+    private fun progressBarFuncFor3dModel(){
+        binding.model3dProgressBar.max=300
+        var counter=0
+        var timer=Timer()
+        var timertask= timerTask {
+            run(){
+                super.runOnUiThread(Runnable {
+                    binding.model3dProgressBar.visibility=View.VISIBLE
+                    counter++;
+                    binding.model3dProgressBar.progress = counter
+                    if(counter==300){
+                        timer.cancel()
+                        binding.model3dProgressBar.visibility=View.INVISIBLE
+                        binding.model3dText.text="upload finished"
+                    }
+                })
+            }
+        }
+        timer.schedule(timertask,0,15)
+    }
     private fun addImage(imageLayout: LinearLayout, addonHash: String) {
         val imageBinding=CustomviewImageBinding.inflate(layoutInflater)
         imageBinding.storeAddon.text=addonHash
@@ -267,13 +297,23 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), requestCode)
     }
+    fun model3dPick() {
+        val intent = Intent()
+        intent.type = "*/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select 3D model (.glb) file"), 3)
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_OK) {
             Log.d("TAG","onActivityResult: Failed")
             return
         }
-        else{
+        else if(requestCode==3){
+            val model3dUri=data!!.data
+            upload3dModel(model3dUri!!)
+            Log.d("TAG","onActivityResult 3dmodel received")
+        }else{
             var imageUri=data!!.data
             Log.d("TAG","onActivityResult Image received")
             val imageBinding= imageViewTable[requestCode]
@@ -316,6 +356,23 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         }
     }
 
+    fun upload3dModel(uri: Uri){
+        progressBarFuncFor3dModel()
+//        val modelFile= File(RealPathUtil.getRealPath(this, uri))
+          val fileName = uri.hashCode().toString()+".glb"
+          StorageDao.upload3dModel(uri, fileName)!!.addOnSuccessListener {
+            Log.d("TAG","upload success")
+            StorageDao.get3dModelUrl(fileName)!!.addOnSuccessListener {
+                val link=it.toString()
+                Log.d("TAG","getting Url success ${link}")
+                model3dlink=link
+                model3dname=fileName
+            }
+        }.addOnFailureListener {
+            Log.d("TAG","upload 3d model onFailure: ${it.localizedMessage}")
+              binding.model3dText.text="failed!try again"
+        }
+    }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
         productShape=p0?.selectedItem.toString()
@@ -329,6 +386,7 @@ class NewAd : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onBackPressed() {
         super.onBackPressed()
         deleteImagesFromCloud("")
+        delete3dModelFromCloud()
     }
 
 

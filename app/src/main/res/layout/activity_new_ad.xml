@@ -35,7 +35,36 @@
             android:text="per Feet"
             android:layout_marginLeft="160dp"
             android:textStyle="bold"/>
-
+        <com.google.android.material.card.MaterialCardView
+            app:cardElevation="10dp"
+            app:cardCornerRadius="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:visibility="invisible"
+                android:id="@+id/model3dProgressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="150dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="10dp"
+                android:progressTint="#00BCD4"
+                android:backgroundTint="@color/white" />
+            <Button
+                android:layout_margin="10dp"
+                android:id="@+id/add3dModel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="add 3d model"
+                android:drawableRight="@drawable/baseline_add_circle_24"/>
+            <TextView
+                android:id="@+id/model3dText"
+                android:textStyle="bold"
+                android:textColor="#009DE4"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.card.MaterialCardView>
         <Spinner
             android:id="@+id/kitchenShapeSpinner"
             android:layout_width="wrap_content"
@@ -55,7 +84,6 @@
             android:layout_height="wrap_content"
             android:text="add feature"
             android:drawableRight="@drawable/baseline_add_circle_24"/>
-
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

@@ -14,4 +14,6 @@ import kotlin.collections.HashMap
     var ratings=ArrayList<Rating>()
     //   map["name"] map["date"] map["comment"] map["image"] map["rating"]
     var addons=ArrayList<Addon>()
+    var model3dlink=""
+    var model3dname=""
 }
